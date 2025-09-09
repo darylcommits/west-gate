@@ -1,26 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
+import Header from './components/Header';
+import HeroSection from './components/HeroSection';
+import AboutSection from './components/AboutSection';
+import PropertyShowcase from './components/PropertyShowcase';
+import PropertyListings from './components/PropertyListings';
+import ServicesSection from './components/ServicesSection';
+import CertificationsSection from './components/CertificationsSection';
+import WhyChooseUsSection from './components/WhyChooseUsSection';
+import ContactSection from './components/ContactSection';
+import Footer from './components/Footer';
+import ChatBot from './components/ChatBot';
 import './App.css';
 
-function App() {
+const App: React.FC = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <HeroSection />
+      <AboutSection />
+      <PropertyShowcase />
+      <PropertyListings />
+      <ServicesSection />
+      <CertificationsSection />
+      <WhyChooseUsSection />
+      <ContactSection />
+      <Footer />
+      <ChatBot />
     </div>
   );
-}
+};
 
 export default App;
