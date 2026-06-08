@@ -90,5 +90,40 @@ export const adminService = {
 
     if (error) throw error
     return data
+  },
+
+  async getVisitorStats() {
+    const now = new Date()
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString()
+    const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+
+    const [{ data: totalData }, { data: todayData }, { data: weekData }, { data: monthData }] = await Promise.all([
+      supabase.from('page_views').select('session_id'),
+      supabase.from('page_views').select('session_id').gte('created_at', todayStart),
+      supabase.from('page_views').select('session_id').gte('created_at', weekStart),
+      supabase.from('page_views').select('session_id').gte('created_at', monthStart),
+    ])
+
+    const uniqueSessions = (rows) => new Set(rows?.map(r => r.session_id) || []).size
+
+    return {
+      totalPageViews: totalData?.length || 0,
+      totalUniqueVisitors: uniqueSessions(totalData),
+      todayVisitors: uniqueSessions(todayData),
+      weekVisitors: uniqueSessions(weekData),
+      monthVisitors: uniqueSessions(monthData),
+    }
+  },
+
+  async getRecentPageViews(limit = 20) {
+    const { data, error } = await supabase
+      .from('page_views')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(limit)
+
+    if (error) throw error
+    return data
   }
 }

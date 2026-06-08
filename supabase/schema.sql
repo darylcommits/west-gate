@@ -163,6 +163,16 @@ CREATE TABLE public.activity_logs (
   ip_address TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+-- ==========================================
+-- PAGE VIEWS TABLE
+-- ==========================================
+CREATE TABLE public.page_views (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  path TEXT NOT NULL,
+  user_agent TEXT,
+  session_id TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
 
 -- Indexes
 CREATE INDEX idx_properties_status ON public.properties(status);
@@ -181,6 +191,9 @@ CREATE INDEX idx_notifications_read ON public.notifications(is_read);
 CREATE INDEX idx_property_images_property ON public.property_images(property_id);
 CREATE INDEX idx_favorites_client ON public.favorites(client_id);
 CREATE INDEX idx_inquiries_status ON public.inquiries(status);
+CREATE INDEX idx_page_views_path ON public.page_views(path);
+CREATE INDEX idx_page_views_session ON public.page_views(session_id);
+CREATE INDEX idx_page_views_created ON public.page_views(created_at DESC);
 
 -- RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -195,6 +208,7 @@ ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.cms_content ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.activity_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.page_views ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 CREATE POLICY "profiles_select_own" ON public.profiles FOR SELECT USING (auth.uid() = id);
@@ -222,6 +236,8 @@ CREATE POLICY "testimonials_admin_all" ON public.testimonials FOR ALL USING (EXI
 CREATE POLICY "cms_public_read" ON public.cms_content FOR SELECT USING (is_published = true);
 CREATE POLICY "cms_admin_all" ON public.cms_content FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role = 'admin'));
 CREATE POLICY "activity_admin_all" ON public.activity_logs FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = auth.uid() AND p.role = 'admin'));
+CREATE POLICY "page_views_public_insert" ON public.page_views FOR INSERT WITH CHECK (true);
+CREATE POLICY "page_views_admin_all" ON public.page_views FOR ALL USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin'));
 
 -- Functions
 CREATE OR REPLACE FUNCTION public.handle_new_user() RETURNS TRIGGER AS $$

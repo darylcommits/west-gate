@@ -6,6 +6,7 @@ import { useAuthStore } from './store/authStore'
 // Layouts
 import PublicLayout from './components/layout/PublicLayout'
 import AdminLayout from './components/layout/AdminLayout'
+import { useTracking } from './hooks/useTracking'
 import { Spinner } from './components/ui/Spinner'
 
 // Lazy loaded pages - Public
@@ -60,6 +61,11 @@ const LoadingFallback = () => (
   </div>
 )
 
+const TrackingWrapper = ({ children }) => {
+  useTracking();
+  return children;
+};
+
 import { ImageGallery } from './components/ui/ImageGallery'
 import { VideoModal } from './components/ui/VideoModal'
 
@@ -71,7 +77,8 @@ function App() {
       <VideoModal />
       
       <Suspense fallback={<LoadingFallback />}>
-        <Routes>
+        <TrackingWrapper>
+          <Routes>
           {/* Public Routes with Navbar/Footer — open to everyone */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<HomePage />} />
@@ -115,6 +122,7 @@ function App() {
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </TrackingWrapper>
       </Suspense>
     </Router>
   )
