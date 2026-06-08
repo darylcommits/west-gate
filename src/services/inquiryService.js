@@ -2,14 +2,12 @@ import { supabase } from '../lib/supabase'
 
 export const inquiryService = {
   async submitInquiry(inquiryData) {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('inquiries')
       .insert([inquiryData])
-      .select()
-      .single()
       
     if (error) throw error
-    return data
+    return true
   },
 
   async getInquiries(filters = {}) {
