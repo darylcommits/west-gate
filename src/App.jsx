@@ -68,6 +68,7 @@ const TrackingWrapper = ({ children }) => {
 
 import { ImageGallery } from './components/ui/ImageGallery'
 import { VideoModal } from './components/ui/VideoModal'
+import { AIChatWidget } from './components/ui/AIChatWidget'
 
 function App() {
   return (
@@ -75,6 +76,7 @@ function App() {
       <Toaster position="top-right" toastOptions={{ className: 'custom-toast' }} />
       <ImageGallery />
       <VideoModal />
+      <AIChatWidget />
       
       <Suspense fallback={<LoadingFallback />}>
         <TrackingWrapper>
