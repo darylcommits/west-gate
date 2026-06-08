@@ -1,17 +1,13 @@
-import Groq from 'groq-sdk';
 import { supabase } from '../lib/supabase';
 
-const groq = new Groq({
-  apiKey: import.meta.env.VITE_GROQ_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 // Fetch a summary of available properties to give the AI context
 const getPropertyContext = async () => {
   try {
     const { data } = await supabase
       .from('properties')
-      .select('name, price, price_label, property_type, status, city, province, bedrooms, bathrooms, lot_area, floor_area, description')
+      .select('name, price, price_label, property_type, status, city, province, bedrooms, bathrooms, lot_area, floor_area')
       .neq('status', 'off_market')
       .order('is_featured', { ascending: false })
       .limit(20);
@@ -63,17 +59,36 @@ Guidelines:
 - Keep responses under 200 words unless a detailed answer is truly necessary`;
 
 export const chatWithAI = async (messages) => {
+  const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+
+  if (!apiKey || apiKey === 'your_groq_api_key_here') {
+    throw new Error('Groq API key is not configured. Please add VITE_GROQ_API_KEY to your environment variables.');
+  }
+
   const propertyList = await getPropertyContext();
 
-  const response = await groq.chat.completions.create({
-    model: 'llama3-8b-8192',
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT(propertyList) },
-      ...messages,
-    ],
-    temperature: 0.7,
-    max_tokens: 400,
+  const response = await fetch(GROQ_API_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'llama3-8b-8192',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT(propertyList) },
+        ...messages,
+      ],
+      temperature: 0.7,
+      max_tokens: 400,
+    }),
   });
 
-  return response.choices[0]?.message?.content || 'Sorry, I could not generate a response. Please try again.';
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err?.error?.message || `Groq API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response. Please try again.';
 };

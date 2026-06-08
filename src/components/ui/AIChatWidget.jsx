@@ -59,9 +59,13 @@ export const AIChatWidget = () => {
       setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
       if (!isOpen) setHasNewMessage(true);
     } catch (error) {
+      console.error('AI chat error:', error);
+      const isKeyError = error.message?.includes('API key') || error.message?.includes('401') || error.message?.includes('403');
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, I\'m having trouble connecting right now. Please try again or contact us directly through the Contact page.',
+        content: isKeyError
+          ? '⚠️ The AI assistant is not configured yet. Please contact us directly through the **Contact page** and we\'ll be happy to help!'
+          : 'Sorry, I\'m having trouble connecting right now. Please try again in a moment or reach us via the **Contact page**.',
       }]);
     } finally {
       setIsLoading(false);
