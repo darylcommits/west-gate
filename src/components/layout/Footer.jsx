@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <footer className="bg-navy-900 text-cream-50 pt-16 pb-8 border-t-[6px] border-crimson-600">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10 mb-12">
           
           {/* Brand Info */}
           <div className="col-span-1 md:col-span-2 lg:col-span-1">
@@ -50,30 +50,40 @@ const Footer = () => {
           </div>
 
           {/* Services */}
-          <div>
+          <div className="md:col-span-2 lg:col-span-1">
             <h3 className="text-white font-display font-semibold text-lg mb-6 relative inline-block">
               Our Services
               <span className="absolute -bottom-2 left-0 w-12 h-1 bg-crimson-600"></span>
             </h3>
-            <ul className="flex flex-col gap-3">
-              <li className="text-cream-50/70 text-sm flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-crimson-500"></span>
-                Strategic Property Marketing
-              </li>
-              <li className="text-cream-50/70 text-sm flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-crimson-500"></span>
-                Client–Property Matching
-              </li>
-              <li className="text-cream-50/70 text-sm flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-crimson-500"></span>
-                End-to-End Processing
-              </li>
-              <li className="text-cream-50/70 text-sm flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-crimson-500"></span>
-                Real Estate Investment
-              </li>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
+              {[
+                'Real Estate Brokerage & Marketing',
+                'Property Selling and Buying Assistance',
+                'Land Acquisition Services',
+                'Property Documentation Assistance',
+                'Transfer of Title Processing',
+                'DAR & DENR Assistance',
+                'Property Due Diligence and Verification',
+                'Reclassification & Land Conversion',
+                'Survey and Subdivision Coordination',
+                'Building Permit Processing Assistance',
+                'Construction & Pabakod Services',
+                'Access Road Assistance',
+                'Property Valuation Assistance',
+                'Publication and Legal Processing',
+                'Real Estate Consultation',
+                'Government Clearances and Permits',
+              ].map(service => (
+                <li key={service}>
+                  <Link to="/services" className="text-cream-50/70 hover:text-crimson-400 transition-colors text-sm flex items-start gap-2 group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-crimson-500 mt-1.5 shrink-0 group-hover:bg-crimson-400 transition-colors"></span>
+                    {service}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
+
 
           {/* Contact Info */}
           <div>
