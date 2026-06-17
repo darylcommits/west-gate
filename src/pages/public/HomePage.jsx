@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiArrowRight, FiSearch, FiHome, FiAward, FiUsers, FiChevronLeft, FiChevronRight, FiArrowUpRight, FiMapPin } from 'react-icons/fi';
+import {
+  FiArrowRight, FiSearch, FiChevronLeft, FiChevronRight, FiArrowUpRight, FiMapPin,
+  FiHome, FiRepeat, FiMap, FiFileText, FiClipboard, FiShield,
+  FiLayers, FiGrid, FiTool, FiHardDrive, FiNavigation,
+  FiBarChart2, FiBook, FiMessageCircle, FiCheckCircle, FiAward, FiUsers
+} from 'react-icons/fi';
 import { Button } from '../../components/ui/Button';
 import { PropertyCard } from '../../components/ui/PropertyCard';
 import { Badge } from '../../components/ui/Badge';
@@ -10,6 +15,25 @@ import { useCMSContent, useTestimonials } from '../../hooks/useCMS';
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice, getPropertyTypeLabel } from '../../lib/utils';
+
+const SERVICES_LIST = [
+  { icon: FiHome,         label: 'Real Estate Brokerage & Marketing' },
+  { icon: FiRepeat,       label: 'Property Selling and Buying' },
+  { icon: FiMap,          label: 'Land Acquisition' },
+  { icon: FiFileText,     label: 'Property Documentation' },
+  { icon: FiClipboard,    label: 'Title Transfer Processing' },
+  { icon: FiShield,       label: 'DAR & DENR Assistance' },
+  { icon: FiSearch,       label: 'Due Diligence & Verification' },
+  { icon: FiLayers,       label: 'Land Reclassification' },
+  { icon: FiGrid,         label: 'Survey & Subdivision' },
+  { icon: FiTool,         label: 'Building Permit Processing' },
+  { icon: FiHardDrive,    label: 'Construction & Pabakod' },
+  { icon: FiNavigation,   label: 'Access Road Assistance' },
+  { icon: FiBarChart2,    label: 'Property Valuation' },
+  { icon: FiBook,         label: 'Legal & Publication Processing' },
+  { icon: FiMessageCircle,label: 'Real Estate Consultation' },
+  { icon: FiCheckCircle,  label: 'Government Clearances' },
+];
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -119,6 +143,62 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Why West Gate / Services Section */}
+      <section className="py-20 bg-cream-50 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" style={{backgroundColor:'rgba(185,24,30,0.07)'}} />
+        <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" style={{backgroundColor:'rgba(2,39,77,0.06)'}} />
+
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <h2 className="text-sm font-bold text-crimson-600 tracking-wider uppercase mb-2">Why West Gate</h2>
+            <h3 className="text-3xl md:text-4xl font-display font-bold text-navy-900 mb-4">
+              Your Trusted Real Estate Partner
+            </h3>
+            <p className="text-gray-600 text-lg">
+              We provide end-to-end real estate solutions — from acquisition to title transfer — with professionalism and expertise.
+            </p>
+          </div>
+
+          {/* Services Grid */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-12"
+          >
+            {SERVICES_LIST.map((service, i) => {
+              const Icon = service.icon;
+              return (
+                <motion.div
+                  key={i}
+                  variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4 } } }}
+                >
+                  <Link
+                    to="/services"
+                    className="flex flex-col items-center text-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-crimson-100 transition-all duration-300 group h-full"
+                  >
+                    <div className="w-11 h-11 rounded-xl bg-navy-900 group-hover:bg-crimson-600 flex items-center justify-center text-white mb-3 transition-colors duration-300">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <p className="text-xs font-medium text-navy-800 leading-snug">{service.label}</p>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+
+          <div className="text-center">
+            <Link to="/services">
+              <Button variant="outline" className="min-w-[200px]">
+                View All Services <FiArrowRight className="ml-2 inline" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Properties Section */}
       <section className="py-24 bg-white overflow-hidden">
         <div className="container mx-auto px-4">
@@ -214,65 +294,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="py-24 bg-white relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" style={{backgroundColor:'rgba(185,24,30,0.07)'}}></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" style={{backgroundColor:'rgba(2,39,77,0.06)'}}></div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-sm font-bold text-crimson-600 tracking-wider uppercase mb-2">Why West Gate</h2>
-            <h3 className="text-3xl md:text-4xl font-display font-bold text-navy-900 mb-6">
-              {aboutContent?.title || 'Your Trusted Real Estate Partner'}
-            </h3>
-            <p className="text-lg text-gray-600">
-              {aboutContent?.subtitle || 'We provide end-to-end solutions for buyers, sellers, and investors with professionalism and expertise.'}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <motion.div 
-              whileHover={{ y: -10 }}
-              className="p-8 rounded-2xl border border-gray-100 shadow-sm text-center text-white" style={{background:'#02274d'}}
-            >
-              <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-white mb-6 rotate-3" style={{background:'#b9181e'}}>
-                <FiHome size={32} />
-              </div>
-              <h4 className="text-xl font-display font-bold text-white mb-4">Curated Properties</h4>
-              <p className="text-white/80 leading-relaxed">
-                We handpick the finest properties in the region, ensuring quality, value, and prime locations for our clients.
-              </p>
-            </motion.div>
-
-            <motion.div 
-              whileHover={{ y: -10 }}
-              className="p-8 rounded-2xl border border-gray-100 shadow-sm text-center text-white" style={{background:'#02274d'}}
-            >
-              <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-6 -rotate-3" style={{background:'#b9181e'}}>
-                <FiAward size={32} className="text-white" />
-              </div>
-              <h4 className="text-xl font-display font-bold text-white mb-4">Expert Guidance</h4>
-              <p className="text-white/80 leading-relaxed">
-                Our team of seasoned professionals provides expert advice on market trends, pricing, and investment opportunities.
-              </p>
-            </motion.div>
-
-            <motion.div 
-              whileHover={{ y: -10 }}
-              className="p-8 rounded-2xl border border-gray-100 shadow-sm text-center text-white" style={{background:'#02274d'}}
-            >
-              <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-white mb-6 rotate-3" style={{background:'#b9181e'}}>
-                <FiUsers size={32} />
-              </div>
-              <h4 className="text-xl font-display font-bold text-white mb-4">End-to-End Service</h4>
-              <p className="text-white/80 leading-relaxed">
-                From property viewing to bank financing and title transfer, we handle all the paperwork for a hassle-free experience.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
 
       {/* Testimonials */}
       {testimonials && testimonials.length > 0 && (
