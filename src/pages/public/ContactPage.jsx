@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { FiMapPin, FiPhone, FiMail, FiSend } from 'react-icons/fi';
-import { Input, Textarea } from '../../components/ui/Input';
+import { Input, Textarea, Select } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { useSubmitInquiry } from '../../hooks/useInquiries';
 import { useAuth } from '../../hooks/useAuth';
@@ -30,15 +30,24 @@ const ContactPage = () => {
 
   const onSubmit = async (data) => {
     try {
+      let finalMessage = data.message;
+      const extras = [];
+      if (data.service) extras.push(`Service Needed: ${data.service}`);
+      if (data.property) extras.push(`Property of Interest: ${data.property}`);
+      
+      if (extras.length > 0) {
+        finalMessage = `${extras.join('\n')}\n\nMessage:\n${data.message}`;
+      }
+
       await submitInquiry.mutateAsync({
         name: data.name,
         email: data.email,
         phone: data.phone,
-        message: data.message,
+        message: finalMessage,
         client_id: user?.id || null,
         status: 'new'
       });
-      reset({ name: '', email: '', phone: '', message: '' });
+      reset({ name: '', email: '', phone: '', message: '', service: '', property: '' });
     } catch (error) {
       // Error handled by hook
     }
@@ -136,6 +145,38 @@ const ContactPage = () => {
                   {...register('phone', { required: 'Phone number is required' })}
                   error={errors.phone?.message}
                 />
+
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <Select
+                    label="Service Needed (Optional)"
+                    {...register('service')}
+                    options={[
+                      'Real Estate Brokerage & Marketing',
+                      'Property Selling and Buying',
+                      'Land Acquisition',
+                      'Property Documentation',
+                      'Title Transfer Processing',
+                      'DAR & DENR Assistance',
+                      'Due Diligence & Verification',
+                      'Land Reclassification',
+                      'Survey & Subdivision',
+                      'Building Permit Processing',
+                      'Construction & Pabakod',
+                      'Access Road Assistance',
+                      'Property Valuation',
+                      'Legal & Publication Processing',
+                      'Real Estate Consultation',
+                      'Government Clearances',
+                      'Other'
+                    ]}
+                  />
+
+                  <Input
+                    label="Property of Interest (Optional)"
+                    placeholder="E.g. West Gate Towers"
+                    {...register('property')}
+                  />
+                </div>
 
                 <Textarea
                   label="Message"
