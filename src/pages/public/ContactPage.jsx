@@ -149,6 +149,7 @@ const ContactPage = () => {
                 <div className="grid sm:grid-cols-2 gap-6">
                   <Select
                     label="Service Needed (Optional)"
+                    defaultValue=""
                     {...register('service')}
                     options={[
                       'Real Estate Brokerage & Marketing',
