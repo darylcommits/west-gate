@@ -15,6 +15,7 @@ const PropertiesPage = lazy(() => import('./pages/public/PropertiesPage'))
 const PropertyDetailPage = lazy(() => import('./pages/public/PropertyDetailPage'))
 const AboutPage = lazy(() => import('./pages/public/AboutPage'))
 const ContactPage = lazy(() => import('./pages/public/ContactPage'))
+const ServicesPage = lazy(() => import('./pages/public/ServicesPage'))
 
 // Lazy loaded pages - Admin Auth
 const AdminLoginPage = lazy(() => import('./pages/auth/AdminLoginPage'))
@@ -86,6 +87,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/properties" element={<PropertiesPage />} />
             <Route path="/properties/:id" element={<PropertyDetailPage />} />
+            <Route path="/services" element={<ServicesPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Route>
