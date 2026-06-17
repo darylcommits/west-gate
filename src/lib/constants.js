@@ -72,8 +72,8 @@ export const TIME_SLOTS = [
 
 export const NAV_LINKS = [
   { name: 'Home', path: '/' },
-  { name: 'Properties', path: '/properties' },
   { name: 'Services', path: '/services' },
+  { name: 'Properties', path: '/properties' },
   { name: 'About Us', path: '/about' },
   { name: 'Contact', path: '/contact' },
 ];
