@@ -48,7 +48,7 @@ export const Modal = ({ isOpen, onClose, title, children, className, maxWidth = 
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
               className={cn(
-                "glass-panel w-full pointer-events-auto flex flex-col max-h-[90vh] shadow-2xl relative",
+                "bg-white rounded-2xl w-full pointer-events-auto flex flex-col max-h-[90vh] shadow-2xl relative",
                 maxWidth,
                 className
               )}
