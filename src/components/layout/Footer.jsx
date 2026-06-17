@@ -55,24 +55,12 @@ const Footer = () => {
               Our Services
               <span className="absolute -bottom-2 left-0 w-12 h-1 bg-crimson-600"></span>
             </h3>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
+            <ul className="flex flex-col gap-3">
               {[
-                'Real Estate Brokerage & Marketing',
-                'Property Selling and Buying Assistance',
-                'Land Acquisition Services',
-                'Property Documentation Assistance',
-                'Transfer of Title Processing',
-                'DAR & DENR Assistance',
-                'Property Due Diligence and Verification',
-                'Reclassification & Land Conversion',
-                'Survey and Subdivision Coordination',
-                'Building Permit Processing Assistance',
-                'Construction & Pabakod Services',
-                'Access Road Assistance',
-                'Property Valuation Assistance',
-                'Publication and Legal Processing',
+                'Property Brokerage',
+                'Title Transfer',
+                'Land Acquisition',
                 'Real Estate Consultation',
-                'Government Clearances and Permits',
               ].map(service => (
                 <li key={service}>
                   <Link to="/services" className="text-cream-50/70 hover:text-crimson-400 transition-colors text-sm flex items-start gap-2 group">
