@@ -303,10 +303,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Proof of Transactions */}
-      <TransactionsSection />
-
-      {/* Testimonials */}
+      {/* Testimonials — Google Reviews */}
       {allTestimonials.length > 0 && (
         <section className="py-24 bg-navy-900 text-white relative">
           <div className="container mx-auto px-4">
@@ -361,6 +358,9 @@ const HomePage = () => {
           </div>
         </section>
       )}
+
+      {/* Proof of Transactions */}
+      <TransactionsSection />
 
       {/* CTA Section */}
       <section className="py-20 text-white text-center relative overflow-hidden" style={{background:'linear-gradient(135deg,#02274d 0%,#b9181e 100%)'}}>
