@@ -14,14 +14,20 @@ export const useNotifications = (userId) => {
   useEffect(() => {
     if (!userId) return
 
-    const subscription = notificationService.subscribeToNotifications(userId, (newNotification) => {
-      // Invalidate both lists and counts
-      queryClient.invalidateQueries({ queryKey: ['notifications', userId] })
-      queryClient.invalidateQueries({ queryKey: ['notifications', 'count', userId] })
-    })
+    let channel = null;
+    try {
+      channel = notificationService.subscribeToNotifications(userId, () => {
+        queryClient.invalidateQueries({ queryKey: ['notifications', userId] })
+        queryClient.invalidateQueries({ queryKey: ['notifications', 'count', userId] })
+      })
+    } catch (err) {
+      console.warn('Realtime subscription error:', err)
+    }
 
     return () => {
-      subscription.then(sub => sub.unsubscribe())
+      if (channel) {
+        try { channel.unsubscribe() } catch {}
+      }
     }
   }, [userId, queryClient])
 

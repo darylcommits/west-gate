@@ -45,7 +45,7 @@ export const notificationService = {
 
   subscribeToNotifications(userId, callback) {
     return supabase
-      .channel(`public:notifications:user_id=eq.${userId}`)
+      .channel(`notifications-${userId}-${Date.now()}`)
       .on(
         'postgres_changes',
         {
