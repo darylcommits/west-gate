@@ -83,6 +83,7 @@ export const ADMIN_NAV_LINKS = [
   { name: 'Properties', path: '/admin/properties', icon: 'FiHome' },
   { name: 'Clients', path: '/admin/clients', icon: 'FiUsers' },
   { name: 'Inquiries', path: '/admin/inquiries', icon: 'FiMessageSquare' },
+  { name: 'Transactions', path: '/admin/transactions', icon: 'FiCheckSquare' },
   { name: 'CMS', path: '/admin/cms', icon: 'FiLayout' },
   { name: 'Testimonials', path: '/admin/testimonials', icon: 'FiStar' },
   { name: 'Settings', path: '/admin/settings', icon: 'FiSettings' },

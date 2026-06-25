@@ -15,6 +15,7 @@ import { useCMSContent, useTestimonials } from '../../hooks/useCMS';
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice, getPropertyTypeLabel } from '../../lib/utils';
+import TransactionsSection from '../../components/sections/TransactionsSection';
 
 const SERVICES_LIST = [
   { icon: FiHome,         label: 'Real Estate Brokerage & Marketing' },
@@ -294,7 +295,8 @@ const HomePage = () => {
         </div>
       </section>
 
-
+      {/* Proof of Transactions */}
+      <TransactionsSection />
 
       {/* Testimonials */}
       {testimonials && testimonials.length > 0 && (
