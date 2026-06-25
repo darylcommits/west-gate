@@ -12,7 +12,6 @@ import { Badge } from '../../components/ui/Badge';
 import { Spinner } from '../../components/ui/Spinner';
 import { useFeaturedProperties } from '../../hooks/useProperties';
 import { useCMSContent, useTestimonials } from '../../hooks/useCMS';
-import { useGoogleReviews } from '../../hooks/useGoogleReviews';
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice, getPropertyTypeLabel } from '../../lib/utils';
@@ -46,13 +45,6 @@ const HomePage = () => {
   const { data: heroContent } = useCMSContent('hero');
   const { data: aboutContent } = useCMSContent('about');
   const { data: testimonials } = useTestimonials();
-  const { data: googleReviews = [] } = useGoogleReviews();
-
-  // Merge: Google reviews first, then manual testimonials
-  const allTestimonials = [
-    ...googleReviews,
-    ...(testimonials || []),
-  ];
 
   const scrollCarousel = (direction) => {
     if (carouselRef.current) {
@@ -303,53 +295,40 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Testimonials — Google Reviews */}
-      {allTestimonials.length > 0 && (
+      {/* Testimonials */}
+      {testimonials && testimonials.length > 0 && (
         <section className="py-24 bg-navy-900 text-white relative">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-sm font-bold text-crimson-500 tracking-wider uppercase mb-2">Client Stories</h2>
               <h3 className="text-3xl md:text-4xl font-display font-bold">What Our Clients Say</h3>
-              {googleReviews.length > 0 && (
-                <div className="flex items-center justify-center gap-2 mt-4">
-                  <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
-                  <span className="text-sm text-gray-400">Powered by Google Reviews</span>
-                </div>
-              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {allTestimonials.slice(0, 6).map((testimonial) => (
+              {testimonials.slice(0, 6).map((testimonial) => (
                 <div key={testimonial.id} className="bg-navy-800 p-8 rounded-2xl border border-navy-700 flex flex-col">
                   {/* Stars */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex text-crimson-500">
-                      {[...Array(Math.min(testimonial.rating || 5, 5))].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-                    {testimonial.is_google && (
-                      <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5 opacity-70" />
-                    )}
+                  <div className="flex text-crimson-500 mb-4">
+                    {[...Array(testimonial.rating || 5)].map((_, i) => (
+                      <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
                   </div>
 
                   <p className="text-cream-50/80 mb-6 italic flex-1">"{testimonial.content}"</p>
 
                   <div className="flex items-center gap-4 mt-auto">
                     {testimonial.client_avatar ? (
-                      <img src={testimonial.client_avatar} alt={testimonial.client_name} className="w-12 h-12 rounded-full object-cover" referrerPolicy="no-referrer" />
+                      <img src={testimonial.client_avatar} alt={testimonial.client_name} className="w-12 h-12 rounded-full object-cover" />
                     ) : (
                       <div className="w-12 h-12 rounded-full bg-navy-700 flex items-center justify-center text-xl font-bold text-crimson-500">
-                        {testimonial.client_name?.charAt(0)}
+                        {testimonial.client_name?.charAt(0) || 'C'}
                       </div>
                     )}
                     <div>
                       <h4 className="font-bold text-white">{testimonial.client_name}</h4>
-                      <p className="text-sm text-crimson-400">
-                        {testimonial.is_google ? testimonial.published_at : testimonial.client_title}
-                      </p>
+                      <p className="text-sm text-crimson-400">{testimonial.client_title}</p>
                     </div>
                   </div>
                 </div>

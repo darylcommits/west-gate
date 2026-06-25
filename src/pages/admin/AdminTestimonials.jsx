@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTestimonials, useUpsertTestimonial, useDeleteTestimonial } from '../../hooks/useCMS';
-import { FiPlus, FiEdit2, FiTrash2, FiStar } from 'react-icons/fi';
+import { supabase } from '../../lib/supabase';
+import { FiPlus, FiEdit2, FiTrash2, FiStar, FiUpload, FiX } from 'react-icons/fi';
 import { Spinner } from '../../components/ui/Spinner';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
@@ -14,9 +15,13 @@ const AdminTestimonials = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
   const [formData, setFormData] = useState({
     client_name: '',
     client_title: '',
+    client_avatar: '',
     content: '',
     rating: 5,
     is_published: true,
@@ -29,6 +34,7 @@ const AdminTestimonials = () => {
       setFormData({
         client_name: testimonial.client_name,
         client_title: testimonial.client_title || '',
+        client_avatar: testimonial.client_avatar || '',
         content: testimonial.content,
         rating: testimonial.rating,
         is_published: testimonial.is_published,
@@ -39,6 +45,7 @@ const AdminTestimonials = () => {
       setFormData({
         client_name: '',
         client_title: '',
+        client_avatar: '',
         content: '',
         rating: 5,
         is_published: true,
@@ -46,6 +53,42 @@ const AdminTestimonials = () => {
       });
     }
     setIsModalOpen(true);
+  };
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('testimonials')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('testimonials')
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({ ...prev, client_avatar: data.publicUrl }));
+      toast.success('Avatar uploaded successfully');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload avatar');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const handleSave = async () => {
@@ -158,6 +201,50 @@ const AdminTestimonials = () => {
         title={editingId ? 'Edit Testimonial' : 'Add Testimonial'}
       >
         <div className="space-y-4">
+          <div className="flex flex-col items-center gap-4 mb-4">
+            <div className="relative w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200 overflow-hidden">
+              {formData.client_avatar ? (
+                <img src={formData.client_avatar} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <FiStar className="w-8 h-8 text-gray-300" />
+              )}
+              {isUploading && (
+                <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
+                  <Spinner size="sm" />
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleAvatarUpload}
+                accept="image/*"
+                className="hidden"
+              />
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                leftIcon={<FiUpload />}
+              >
+                Upload Avatar
+              </Button>
+              {formData.client_avatar && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setFormData(prev => ({ ...prev, client_avatar: '' }))}
+                  className="text-red-600 hover:bg-red-50"
+                  title="Remove avatar"
+                >
+                  <FiX />
+                </Button>
+              )}
+            </div>
+          </div>
+
           <Input
             label="Client Name"
             value={formData.client_name}
@@ -206,8 +293,8 @@ const AdminTestimonials = () => {
           </div>
 
           <div className="pt-4 flex gap-3 justify-end">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button variant="primary" onClick={handleSave} isLoading={upsertTestimonial.isPending}>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)} disabled={isUploading}>Cancel</Button>
+            <Button variant="primary" onClick={handleSave} isLoading={upsertTestimonial.isPending} disabled={isUploading}>
               Save Testimonial
             </Button>
           </div>
