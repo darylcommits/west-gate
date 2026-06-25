@@ -3,7 +3,7 @@ import { Outlet, Link } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { ADMIN_NAV_LINKS } from '../../lib/constants';
 import { useUiStore } from '../../store/uiStore';
-import { FiMenu, FiBell, FiCheck, FiCheckCheck } from 'react-icons/fi';
+import { FiMenu, FiBell, FiCheck } from 'react-icons/fi';
 import { useAuth } from '../../hooks/useAuth';
 import { useNotifications, useUnreadCount, useMarkNotificationRead, useMarkAllRead } from '../../hooks/useNotifications';
 import { formatDistanceToNow } from 'date-fns';
@@ -84,7 +84,7 @@ const NotificationBell = ({ userId }) => {
                 onClick={handleMarkAll}
                 className="flex items-center gap-1 text-xs text-navy-600 hover:text-crimson-600 font-medium transition-colors"
               >
-                <FiCheckCheck className="w-3.5 h-3.5" /> Mark all read
+                <FiCheck className="w-3.5 h-3.5" /> Mark all read
               </button>
             )}
           </div>
