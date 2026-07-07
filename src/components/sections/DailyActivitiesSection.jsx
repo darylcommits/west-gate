@@ -69,9 +69,9 @@ const DailyActivitiesSection = () => {
                 <div className="relative h-48 bg-gray-100 overflow-hidden">
                   {activity.media_url ? (
                     activity.media_type === 'video' ? (
-                      <video src={activity.media_url} className="w-full h-full object-cover" muted playsInline />
+                      <video src={activity.media_url} className="w-full h-full object-contain bg-black/5" muted playsInline />
                     ) : (
-                      <img src={activity.media_url} alt={activity.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img src={activity.media_url} alt={activity.title} className="w-full h-full object-contain bg-black/5 group-hover:scale-105 transition-transform duration-500" />
                     )
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-navy-50">
@@ -136,13 +136,13 @@ const DailyActivitiesSection = () => {
             >
               {/* Media */}
               {selected.media_url && (
-                <div className="relative">
+                <div className="relative bg-black/5 rounded-t-3xl flex items-center justify-center">
                   {selected.media_type === 'video' ? (
-                    <video src={selected.media_url} controls className="w-full rounded-t-3xl max-h-80 object-cover" />
+                    <video src={selected.media_url} controls autoPlay className="w-full rounded-t-3xl max-h-[60vh] object-contain" />
                   ) : (
-                    <img src={selected.media_url} alt={selected.title} className="w-full rounded-t-3xl max-h-80 object-cover" />
+                    <img src={selected.media_url} alt={selected.title} className="w-full rounded-t-3xl max-h-[60vh] object-contain" />
                   )}
-                  <button onClick={() => setSelected(null)} className="absolute top-4 right-4 w-9 h-9 bg-white/90 rounded-full flex items-center justify-center hover:bg-white shadow-md transition-colors">
+                  <button onClick={() => setSelected(null)} className="absolute top-4 right-4 w-9 h-9 bg-white/90 rounded-full flex items-center justify-center hover:bg-white shadow-md transition-colors z-10">
                     <FiX className="w-5 h-5 text-navy-900" />
                   </button>
                 </div>

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { FiPlus, FiEdit2, FiTrash2, FiImage, FiUpload, FiEye, FiEyeOff, FiArrowUp, FiArrowDown } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiImage, FiUpload, FiEye, FiEyeOff, FiVideo } from 'react-icons/fi';
 import { useHeroSlides, useUpsertHeroSlide, useDeleteHeroSlide } from '../../hooks/useHeroAndActivities';
 import { heroSlidesService } from '../../services/heroAndActivitiesService';
 import { Button } from '../../components/ui/Button';
@@ -13,6 +13,7 @@ const EMPTY_FORM = {
   subtitle: '',
   image_url: '',
   image_path: '',
+  media_type: 'image',
   button_text: 'View Properties',
   button_link: '/properties',
   secondary_button_text: 'Contact Us',
@@ -41,6 +42,7 @@ const AdminHeroSlides = () => {
         subtitle: slide.subtitle || '',
         image_url: slide.image_url || '',
         image_path: slide.image_path || '',
+        media_type: slide.media_type || 'image',
         button_text: slide.button_text || 'View Properties',
         button_link: slide.button_link || '/properties',
         secondary_button_text: slide.secondary_button_text || 'Contact Us',
@@ -51,7 +53,7 @@ const AdminHeroSlides = () => {
       setPreview(slide.image_url || null);
     } else {
       setEditingId(null);
-      setFormData(EMPTY_FORM);
+      setFormData({ ...EMPTY_FORM });
       setPreview(null);
     }
     setIsModalOpen(true);
@@ -60,13 +62,16 @@ const AdminHeroSlides = () => {
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) { toast.error('Images only'); return; }
+    const isVideo = file.type.startsWith('video/');
+    const isImage = file.type.startsWith('image/');
+    if (!isVideo && !isImage) { toast.error('Images and videos only'); return; }
     try {
       setIsUploading(true);
-      setPreview(URL.createObjectURL(file));
-      const { url, path } = await heroSlidesService.uploadImage(file);
-      setFormData(f => ({ ...f, image_url: url, image_path: path }));
-      toast.success('Image uploaded!');
+      if (isImage) setPreview(URL.createObjectURL(file));
+      else setPreview(null); // video preview handled differently
+      const { url, path, mediaType } = await heroSlidesService.uploadMedia(file);
+      setFormData(f => ({ ...f, image_url: url, image_path: path, media_type: mediaType }));
+      toast.success(`${isVideo ? 'Video' : 'Image'} uploaded!`);
     } catch (err) {
       toast.error('Upload failed');
       setPreview(null);
@@ -162,13 +167,15 @@ const AdminHeroSlides = () => {
               className="relative h-48 rounded-xl border-2 border-dashed border-gray-200 overflow-hidden bg-gray-50 cursor-pointer hover:border-crimson-400 transition-colors"
               onClick={() => fileRef.current?.click()}
             >
-              {preview ? (
+              {preview && formData.media_type === 'image' ? (
                 <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+              ) : formData.image_url && formData.media_type === 'video' ? (
+                <video src={formData.image_url} className="w-full h-full object-cover" muted playsInline />
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400">
                   <FiUpload className="w-8 h-8" />
-                  <span className="text-sm">Click to upload background image</span>
-                  <span className="text-xs">JPG, PNG, WebP — max 20MB</span>
+                  <span className="text-sm">Click to upload background image or video</span>
+                  <span className="text-xs">JPG, PNG, WebP, MP4, WebM — max 200MB</span>
                 </div>
               )}
               {isUploading && (
@@ -176,13 +183,13 @@ const AdminHeroSlides = () => {
                   <Spinner size="lg" />
                 </div>
               )}
-              {preview && !isUploading && (
+              {(preview || formData.image_url) && !isUploading && (
                 <div className="absolute inset-0 bg-navy-900/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-white text-sm font-medium flex items-center gap-2"><FiUpload /> Change Image</span>
+                  <span className="text-white text-sm font-medium flex items-center gap-2"><FiUpload /> Change Media</span>
                 </div>
               )}
             </div>
-            <input type="file" ref={fileRef} onChange={handleUpload} accept="image/*" className="hidden" />
+            <input type="file" ref={fileRef} onChange={handleUpload} accept="image/*,video/mp4,video/webm,video/quicktime" className="hidden" />
           </div>
 
           <Input label="Headline / Title *" value={formData.title} onChange={e => setFormData(f => ({ ...f, title: e.target.value }))} placeholder="Turning Dreams to Reality" />

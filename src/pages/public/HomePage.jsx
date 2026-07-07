@@ -101,15 +101,30 @@ const HomePage = () => {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-navy-900/90 via-navy-900/70 to-navy-900/40 z-10" />
           {activeSlide ? (
-            <motion.img
-              key={heroIndex}
-              initial={{ opacity: 0, scale: 1.04 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              src={activeSlide.image_url}
-              alt={activeSlide.title}
-              className="w-full h-full object-cover object-center"
-            />
+            activeSlide.media_type === 'video' ? (
+              <motion.video
+                key={heroIndex}
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
+                src={activeSlide.image_url}
+                className="w-full h-full object-cover object-center"
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
+            ) : (
+              <motion.img
+                key={heroIndex}
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
+                src={activeSlide.image_url}
+                alt={activeSlide.title}
+                className="w-full h-full object-cover object-center"
+              />
+            )
           ) : (
             <img
               src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2000"

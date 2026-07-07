@@ -35,13 +35,14 @@ export const heroSlidesService = {
     if (error) throw error;
   },
 
-  async uploadImage(file) {
+  async uploadMedia(file) {
     const ext = file.name.split('.').pop();
     const path = `${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from('hero-slides').upload(path, file);
     if (error) throw error;
     const { data } = supabase.storage.from('hero-slides').getPublicUrl(path);
-    return { url: data.publicUrl, path };
+    const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+    return { url: data.publicUrl, path, mediaType };
   },
 
   async deleteImage(path) {
