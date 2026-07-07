@@ -282,9 +282,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Daily Activities */}
-      <DailyActivitiesSection />
-
       {/* Featured Properties Section */}
       <section className="py-24 bg-white overflow-hidden">
         <div className="container mx-auto px-4">
@@ -425,6 +422,9 @@ const HomePage = () => {
 
       {/* Proof of Transactions */}
       <TransactionsSection />
+
+      {/* Daily Activities */}
+      <DailyActivitiesSection />
 
       {/* CTA Section */}
       <section className="py-20 text-white text-center relative overflow-hidden" style={{background:'linear-gradient(135deg,#02274d 0%,#b9181e 100%)'}}>
