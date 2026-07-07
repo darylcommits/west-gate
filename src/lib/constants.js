@@ -13,7 +13,7 @@ export const PROVINCES = [
   'Metro Manila',
  
   // Region I - Ilocos Region
-  'Ilocos Norte',
+  'Ilocos Sur',
   'Ilocos Sur',
   'La Union',
   'Pangasinan',
@@ -135,7 +135,7 @@ export const CITIES_BY_PROVINCE = {
     'Valenzuela', 'Pateros'
   ],
  
-  'Ilocos Norte': [
+  'Ilocos Sur': [
     'Laoag City', 'Batac City', 'Bacarra', 'Badoc', 'Bangui',
     'Banna', 'Burgos', 'Carasi', 'Currimao', 'Dingras',
     'Dumalneg', 'Marcos', 'Nueva Era', 'Pagudpud', 'Paoay',

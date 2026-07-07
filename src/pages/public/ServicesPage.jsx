@@ -12,7 +12,7 @@ const SERVICES = [
   {
     icon: FiHome,
     title: 'Real Estate Brokerage & Marketing',
-    description: 'Professional property marketing and brokerage services to connect buyers and sellers efficiently across Ilocos Norte.',
+    description: 'Professional property marketing and brokerage services to connect buyers and sellers efficiently across Ilocos Sur.',
     color: 'from-navy-900 to-navy-700',
   },
   {
@@ -126,7 +126,7 @@ const ServicesPage = () => {
     <>
       {/* SEO */}
       <title>Our Services | West Gate Realty Services</title>
-      <meta name="description" content="Explore the full range of real estate services offered by West Gate Realty Services in Ilocos Norte — from property buying and selling to title transfer, DAR/DENR assistance, and more." />
+      <meta name="description" content="Explore the full range of real estate services offered by West Gate Realty Services in Ilocos Sur — from property buying and selling to title transfer, DAR/DENR assistance, and more." />
 
       {/* Hero Section */}
       <section className="relative bg-navy-900 overflow-hidden py-24 md:py-32">
@@ -154,7 +154,7 @@ const ServicesPage = () => {
               <span className="text-crimson-400">Real Estate Services</span>
             </h1>
             <p className="text-navy-200 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-              From property acquisition to title transfer, we provide end-to-end real estate solutions tailored to your needs across Ilocos Norte.
+              From property acquisition to title transfer, we provide end-to-end real estate solutions tailored to your needs across Ilocos Sur.
             </p>
           </motion.div>
         </div>

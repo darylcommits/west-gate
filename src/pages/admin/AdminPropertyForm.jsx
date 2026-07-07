@@ -32,7 +32,7 @@ const AdminPropertyForm = () => {
     defaultValues: {
       property_code: generatePropertyCode(),
       status: 'available',
-      province: 'Ilocos Norte',
+      province: 'Ilocos Sur',
     }
   });
 
