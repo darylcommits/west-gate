@@ -12,10 +12,12 @@ import { Badge } from '../../components/ui/Badge';
 import { Spinner } from '../../components/ui/Spinner';
 import { useFeaturedProperties } from '../../hooks/useProperties';
 import { useCMSContent, useTestimonials } from '../../hooks/useCMS';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice, getPropertyTypeLabel } from '../../lib/utils';
 import TransactionsSection from '../../components/sections/TransactionsSection';
+import DailyActivitiesSection from '../../components/sections/DailyActivitiesSection';
+import { useHeroSlides } from '../../hooks/useHeroAndActivities';
 
 const SERVICES_LIST = [
   { icon: FiHome,         label: 'Real Estate Brokerage & Marketing' },
@@ -45,10 +47,34 @@ const HomePage = () => {
   const { data: heroContent } = useCMSContent('hero');
   const { data: aboutContent } = useCMSContent('about');
   const { data: testimonials } = useTestimonials();
+  const { data: heroSlides = [] } = useHeroSlides();
+
+  // Hero carousel state
+  const [heroIndex, setHeroIndex] = useState(0);
+  const heroTimerRef = useRef(null);
+
+  const startHeroTimer = () => {
+    if (heroTimerRef.current) clearInterval(heroTimerRef.current);
+    heroTimerRef.current = setInterval(() => {
+      setHeroIndex(i => (i + 1) % Math.max(heroSlides.length, 1));
+    }, 5000);
+  };
+
+  useEffect(() => {
+    if (heroSlides.length > 1) startHeroTimer();
+    return () => { if (heroTimerRef.current) clearInterval(heroTimerRef.current); };
+  }, [heroSlides.length]);
+
+  const gotoSlide = (idx) => {
+    setHeroIndex(idx);
+    startHeroTimer();
+  };
+
+  const activeSlide = heroSlides[heroIndex] || null;
 
   const scrollCarousel = (direction) => {
     if (carouselRef.current) {
-      const scrollAmount = window.innerWidth < 768 ? 340 : 424; // Card width + gap
+      const scrollAmount = window.innerWidth < 768 ? 340 : 424;
       carouselRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
     }
   };
@@ -69,58 +95,72 @@ const HomePage = () => {
 
   return (
     <div className="w-full">
-      {/* Hero Section */}
+      {/* Hero Section — Carousel */}
       <section className="relative min-h-[90vh] flex items-center justify-center pt-20 pb-32 overflow-hidden">
-        {/* Background Image with Overlay */}
+        {/* Background layers */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/90 via-navy-900/70 to-navy-900/40 z-10"></div>
-          <img 
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2000" 
-            alt="Luxury Home" 
-            className="w-full h-full object-cover object-center"
-          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/90 via-navy-900/70 to-navy-900/40 z-10" />
+          {activeSlide ? (
+            <motion.img
+              key={heroIndex}
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              src={activeSlide.image_url}
+              alt={activeSlide.title}
+              className="w-full h-full object-cover object-center"
+            />
+          ) : (
+            <img
+              src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2000"
+              alt="Luxury Home"
+              className="w-full h-full object-cover object-center"
+            />
+          )}
         </div>
 
         <div className="container mx-auto px-4 relative z-20">
           <div className="max-w-3xl">
-            <motion.h1 
+            <motion.h1
+              key={`title-${heroIndex}`}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               className="text-5xl md:text-7xl font-display font-bold text-white leading-tight mb-6"
             >
-              Turning Dreams to Reality
+              {activeSlide?.title || 'Turning Dreams to Reality'}
             </motion.h1>
-            
-            <motion.p 
+
+            <motion.p
+              key={`sub-${heroIndex}`}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-xl text-cream-50/90 mb-10 max-w-2xl leading-relaxed"
             >
-              West Gate Realty Services is dedicated to helping clients with all their real estate needs. Whether you're buying, selling, renting, or managing property, we provide expert guidance and personalized service to ensure a smooth transaction.
+              {activeSlide?.subtitle || 'West Gate Realty Services is dedicated to helping clients with all their real estate needs. Whether you\'re buying, selling, renting, or managing property, we provide expert guidance and personalized service to ensure a smooth transaction.'}
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="flex flex-col sm:flex-row gap-4 mb-12"
             >
-              <Link to={heroData.button_link}>
+              <Link to={activeSlide?.button_link || heroData.button_link}>
                 <Button size="lg" variant="secondary" className="w-full sm:w-auto min-w-[200px]">
-                  {heroData.button_text}
+                  {activeSlide?.button_text || heroData.button_text}
                 </Button>
               </Link>
-              <Link to={heroData.secondary_button_link}>
+              <Link to={activeSlide?.secondary_button_link || heroData.secondary_button_link}>
                 <Button size="lg" variant="outline-white" className="w-full sm:w-auto min-w-[200px]">
-                  {heroData.secondary_button_text}
+                  {activeSlide?.secondary_button_text || heroData.secondary_button_text}
                 </Button>
               </Link>
             </motion.div>
 
             {/* Search Bar */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -128,9 +168,9 @@ const HomePage = () => {
             >
               <form onSubmit={handleSearch} className="flex-grow flex items-center relative">
                 <FiSearch className="absolute left-4 text-gray-400 w-5 h-5" />
-                <input 
-                  type="text" 
-                  placeholder="Search by location, property type, or keyword..." 
+                <input
+                  type="text"
+                  placeholder="Search by location, property type, or keyword..."
                   className="w-full pl-12 pr-4 py-4 rounded-xl border-none bg-white focus:ring-2 focus:ring-crimson-500 text-navy-900"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -142,6 +182,33 @@ const HomePage = () => {
             </motion.div>
           </div>
         </div>
+
+        {/* Carousel dots & arrows — only show if there are slides */}
+        {heroSlides.length > 1 && (
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+            <button
+              onClick={() => gotoSlide((heroIndex - 1 + heroSlides.length) % heroSlides.length)}
+              className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center text-white transition-all"
+            >
+              <FiChevronLeft className="w-4 h-4" />
+            </button>
+            {heroSlides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => gotoSlide(i)}
+                className={`rounded-full transition-all duration-300 ${
+                  i === heroIndex ? 'w-8 h-2.5 bg-crimson-500' : 'w-2.5 h-2.5 bg-white/50 hover:bg-white/80'
+                }`}
+              />
+            ))}
+            <button
+              onClick={() => gotoSlide((heroIndex + 1) % heroSlides.length)}
+              className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center text-white transition-all"
+            >
+              <FiChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Why West Gate / Services Section */}
@@ -340,6 +407,9 @@ const HomePage = () => {
 
       {/* Proof of Transactions */}
       <TransactionsSection />
+
+      {/* Daily Activities */}
+      <DailyActivitiesSection />
 
       {/* CTA Section */}
       <section className="py-20 text-white text-center relative overflow-hidden" style={{background:'linear-gradient(135deg,#02274d 0%,#b9181e 100%)'}}>

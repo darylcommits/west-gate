@@ -30,6 +30,8 @@ const AdminCMS = lazy(() => import('./pages/admin/AdminCMS'))
 const AdminTestimonials = lazy(() => import('./pages/admin/AdminTestimonials'))
 const AdminSettings = lazy(() => import('./pages/admin/AdminSettings'))
 const AdminTransactions = lazy(() => import('./pages/admin/AdminTransactions'))
+const AdminHeroSlides = lazy(() => import('./pages/admin/AdminHeroSlides'))
+const AdminDailyActivities = lazy(() => import('./pages/admin/AdminDailyActivities'))
 
 // Admin-only route guard
 const AdminRoute = ({ children }) => {
@@ -121,6 +123,8 @@ function App() {
             <Route path="cms" element={<AdminCMS />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="transactions" element={<AdminTransactions />} />
+            <Route path="hero-slides" element={<AdminHeroSlides />} />
+            <Route path="daily-activities" element={<AdminDailyActivities />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
           </Route>
